@@ -13,9 +13,9 @@ const Shop = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [sortBy, setSortBy] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('default');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
   useEffect(() => {
@@ -28,8 +28,8 @@ const Shop = () => {
     let filtered = products.filter((product) => {
       const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            product.brand.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesBrand = !selectedBrand || product.brand === selectedBrand;
-      const matchesCategory = !selectedCategory || product.category === selectedCategory;
+      const matchesBrand = selectedBrand === 'all' || product.brand === selectedBrand;
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
       const matchesPrice = (!priceRange.min || product.price >= parseFloat(priceRange.min)) &&
                           (!priceRange.max || product.price <= parseFloat(priceRange.max));
       
@@ -59,9 +59,9 @@ const Shop = () => {
 
   const clearFilters = () => {
     setSearchTerm('');
-    setSelectedBrand('');
-    setSelectedCategory('');
-    setSortBy('');
+    setSelectedBrand('all');
+    setSelectedCategory('all');
+    setSortBy('default');
     setPriceRange({ min: '', max: '' });
   };
 
@@ -96,7 +96,7 @@ const Shop = () => {
                 <SelectValue placeholder="All Brands" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Brands</SelectItem>
+                <SelectItem value="all">All Brands</SelectItem>
                 {getBrands().map((brand) => (
                   <SelectItem key={brand} value={brand}>{brand}</SelectItem>
                 ))}
@@ -109,7 +109,7 @@ const Shop = () => {
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
                 {getCategories().map((category) => (
                   <SelectItem key={category} value={category}>{category}</SelectItem>
                 ))}
@@ -122,7 +122,7 @@ const Shop = () => {
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Default</SelectItem>
+                <SelectItem value="default">Default</SelectItem>
                 <SelectItem value="price-low">Price: Low to High</SelectItem>
                 <SelectItem value="price-high">Price: High to Low</SelectItem>
                 <SelectItem value="name">Name: A to Z</SelectItem>
