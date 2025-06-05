@@ -36,7 +36,7 @@ const Header: React.FC = () => {
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.category.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 5); // Limit to 5 results
+      ).slice(0, 5);
       setSearchResults(filtered);
       setShowSearchResults(true);
     } else {
@@ -48,7 +48,6 @@ const Header: React.FC = () => {
   const handleSearchResultClick = (product: Product) => {
     setSearchQuery('');
     setShowSearchResults(false);
-    // In a real app, this would navigate to product detail page
     navigate('/shop');
   };
 
@@ -64,9 +63,12 @@ const Header: React.FC = () => {
     <header className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
-            🛒 ShopZone
+          {/* Logo - Updated for BAREEHA'S ASSEMBLE */}
+          <Link to="/" className="flex flex-col items-start">
+            <span className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+              BAREEHA'S ASSEMBLE
+            </span>
+            <span className="text-xs text-gray-500 italic">fashion meets the elegance</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -75,8 +77,8 @@ const Header: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors font-medium ${
-                  location.pathname === item.path ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : ''
+                className={`flex items-center space-x-1 text-gray-700 hover:text-pink-600 transition-colors font-medium ${
+                  location.pathname === item.path ? 'text-pink-600 border-b-2 border-pink-600 pb-1' : ''
                 }`}
               >
                 <span>{item.emoji}</span>
@@ -86,8 +88,8 @@ const Header: React.FC = () => {
             {isAdmin && (
               <Link
                 to="/admin"
-                className={`flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors font-medium ${
-                  location.pathname === '/admin' ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : ''
+                className={`flex items-center space-x-1 text-gray-700 hover:text-pink-600 transition-colors font-medium ${
+                  location.pathname === '/admin' ? 'text-pink-600 border-b-2 border-pink-600 pb-1' : ''
                 }`}
               >
                 <span>⚙️</span>
@@ -96,7 +98,7 @@ const Header: React.FC = () => {
             )}
           </nav>
 
-          {/* Enhanced Search Bar */}
+          {/* Enhanced Search Bar - Updated styling */}
           <div className="hidden lg:flex items-center space-x-2 flex-1 max-w-md mx-8 relative">
             <form onSubmit={handleSearchSubmit} className="relative flex-1">
               <div className="relative">
@@ -108,7 +110,7 @@ const Header: React.FC = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => searchQuery && setShowSearchResults(true)}
                   onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
-                  className="pl-10 pr-4 py-2 rounded-full border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                  className="pl-10 pr-4 py-2 rounded-full border-2 border-pink-200 focus:border-pink-500 transition-colors"
                 />
               </div>
               
@@ -121,7 +123,7 @@ const Header: React.FC = () => {
                       <button
                         key={product.id}
                         onClick={() => handleSearchResultClick(product)}
-                        className="w-full flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg transition-colors text-left"
+                        className="w-full flex items-center space-x-3 p-2 hover:bg-pink-50 rounded-lg transition-colors text-left"
                       >
                         <img
                           src={product.image}
@@ -143,14 +145,14 @@ const Header: React.FC = () => {
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
             {isAdmin && (
-              <Button variant="outline" size="sm" onClick={logout} className="hidden md:flex">
+              <Button variant="outline" size="sm" onClick={logout} className="hidden md:flex border-pink-500 text-pink-600 hover:bg-pink-50">
                 Logout
               </Button>
             )}
             
             <Link 
               to="/admin" 
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-pink-50 rounded-full transition-colors"
               title="Admin Panel"
             >
               <User className="w-5 h-5 text-gray-700" />
@@ -158,12 +160,12 @@ const Header: React.FC = () => {
 
             <button
               onClick={toggleCart}
-              className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="relative p-2 hover:bg-pink-50 rounded-full transition-colors"
               title="Shopping Cart"
             >
               <ShoppingCart className="w-5 h-5 text-gray-700" />
               {getTotalItems() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse font-bold">
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center animate-pulse font-bold">
                   {getTotalItems()}
                 </span>
               )}
@@ -171,7 +173,7 @@ const Header: React.FC = () => {
 
             {/* Mobile Menu Button */}
             <button 
-              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="md:hidden p-2 hover:bg-pink-50 rounded-full transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -181,7 +183,7 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 py-4 border-t border-gray-200">
+          <div className="md:hidden mt-4 py-4 border-t border-pink-200">
             {/* Mobile Search */}
             <div className="mb-4">
               <form onSubmit={handleSearchSubmit}>
@@ -192,7 +194,7 @@ const Header: React.FC = () => {
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-pink-200 focus:border-pink-500"
                   />
                 </div>
               </form>
@@ -207,8 +209,8 @@ const Header: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
                     location.pathname === item.path 
-                      ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600' 
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-pink-50 text-pink-600 border-l-4 border-pink-600' 
+                      : 'text-gray-700 hover:bg-pink-50'
                   }`}
                 >
                   <span>{item.emoji}</span>
@@ -221,8 +223,8 @@ const Header: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
                     location.pathname === '/admin' 
-                      ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600' 
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-pink-50 text-pink-600 border-l-4 border-pink-600' 
+                      : 'text-gray-700 hover:bg-pink-50'
                   }`}
                 >
                   <span>⚙️</span>

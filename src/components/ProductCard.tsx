@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { ShoppingCart, Star, Eye, Heart } from 'lucide-react';
 import { Product } from '@/contexts/CartContext';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
+import CODCheckout from './CODCheckout';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +14,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [showCODCheckout, setShowCODCheckout] = useState(false);
 
   const handleAddToCart = () => {
     addToCart(product);
@@ -25,11 +26,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleBuyNow = () => {
     addToCart(product);
+    setShowCODCheckout(true);
+  };
+
+  const handleOrderComplete = () => {
+    setShowCODCheckout(false);
     toast({
-      title: "🚀 Buying now!",
-      description: `${product.name} added to cart. Redirecting to checkout...`,
+      title: "🎉 Order placed successfully!",
+      description: "You will receive a confirmation call shortly.",
     });
-    // In a real app, this would redirect to checkout
   };
 
   const handleWishlist = () => {
@@ -63,136 +68,146 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const stockStatus = getStockStatus();
 
   return (
-    <div 
-      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="relative overflow-hidden">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-        
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col space-y-2">
-          {product.isNew && (
-            <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
-              🆕 NEW
-            </span>
-          )}
-          {product.isOnSale && (
-            <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-              🏷️ -{product.discount}% OFF
-            </span>
-          )}
-        </div>
-
-        {/* Wishlist Button */}
-        <button
-          onClick={handleWishlist}
-          className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-200 ${
-            isWishlisted 
-              ? 'bg-red-500 text-white' 
-              : 'bg-white/80 text-gray-600 hover:bg-red-500 hover:text-white'
-          }`}
-        >
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
-        </button>
-
-        {/* Quick View Button - Shows on Hover */}
-        {isHovered && (
-          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="bg-white/90 text-gray-800 hover:bg-white"
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              Quick View
-            </Button>
-          </div>
-        )}
-      </div>
-      
-      <div className="p-5">
-        {/* Brand */}
-        <div className="mb-2">
-          <span className="text-sm text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded">
-            {product.brand}
-          </span>
-        </div>
-
-        {/* Product Name */}
-        <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-          {product.name}
-        </h3>
-        
-        {/* Rating */}
-        <div className="flex items-center mb-3">
-          <div className="flex">
-            {renderStars(product.rating)}
-          </div>
-          <span className="ml-2 text-sm text-gray-600">({product.rating})</span>
-        </div>
-        
-        {/* Pricing */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold text-xl text-gray-900">${product.price}</span>
-            {product.originalPrice && (
-              <span className="text-sm text-gray-500 line-through">
-                ${product.originalPrice}
+    <>
+      <div 
+        className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="relative overflow-hidden">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+          />
+          
+          {/* Badges */}
+          <div className="absolute top-3 left-3 flex flex-col space-y-2">
+            {product.isNew && (
+              <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
+                🆕 NEW
+              </span>
+            )}
+            {product.isOnSale && (
+              <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                🏷️ -{product.discount}% OFF
               </span>
             )}
           </div>
-          <div className={`text-sm font-medium ${stockStatus.color}`}>
-            {stockStatus.text}
-          </div>
-        </div>
 
-        {/* Savings Display */}
-        {product.originalPrice && (
-          <div className="mb-3 p-2 bg-green-50 rounded-lg">
-            <span className="text-green-700 text-sm font-medium">
-              💰 You save ${(product.originalPrice - product.price).toFixed(2)}!
-            </span>
-          </div>
-        )}
+          {/* Wishlist Button */}
+          <button
+            onClick={handleWishlist}
+            className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-200 ${
+              isWishlisted 
+                ? 'bg-red-500 text-white' 
+                : 'bg-white/80 text-gray-600 hover:bg-red-500 hover:text-white'
+            }`}
+          >
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
+          </button>
+
+          {/* Quick View Button - Shows on Hover */}
+          {isHovered && (
+            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-white/90 text-gray-800 hover:bg-white"
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                Quick View
+              </Button>
+            </div>
+          )}
+        </div>
         
-        {/* Action Buttons */}
-        <div className="space-y-2">
-          <Button
-            onClick={handleBuyNow}
-            disabled={product.stock === 0}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2"
-            variant={product.stock === 0 ? "secondary" : "default"}
-          >
-            {product.stock === 0 ? '😔 Out of Stock' : '🚀 Buy Now'}
-          </Button>
-          
-          <Button
-            onClick={handleAddToCart}
-            disabled={product.stock === 0}
-            variant="outline"
-            className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold"
-          >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Add to Cart
-          </Button>
-        </div>
-
-        {/* Free Shipping Notice */}
-        {product.price > 50 && (
-          <div className="mt-3 text-center">
-            <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-              🚚 Free Shipping
+        <div className="p-5">
+          {/* Brand */}
+          <div className="mb-2">
+            <span className="text-sm text-pink-600 font-medium bg-pink-50 px-2 py-1 rounded">
+              {product.brand}
             </span>
           </div>
-        )}
+
+          {/* Product Name */}
+          <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-pink-600 transition-colors">
+            {product.name}
+          </h3>
+          
+          {/* Rating */}
+          <div className="flex items-center mb-3">
+            <div className="flex">
+              {renderStars(product.rating)}
+            </div>
+            <span className="ml-2 text-sm text-gray-600">({product.rating})</span>
+          </div>
+          
+          {/* Pricing */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <span className="font-bold text-xl text-gray-900">${product.price}</span>
+              {product.originalPrice && (
+                <span className="text-sm text-gray-500 line-through">
+                  ${product.originalPrice}
+                </span>
+              )}
+            </div>
+            <div className={`text-sm font-medium ${stockStatus.color}`}>
+              {stockStatus.text}
+            </div>
+          </div>
+
+          {/* Savings Display */}
+          {product.originalPrice && (
+            <div className="mb-3 p-2 bg-green-50 rounded-lg">
+              <span className="text-green-700 text-sm font-medium">
+                💰 You save ${(product.originalPrice - product.price).toFixed(2)}!
+              </span>
+            </div>
+          )}
+          
+          {/* Action Buttons - Updated for BAREEHA'S ASSEMBLE branding */}
+          <div className="space-y-2">
+            <Button
+              onClick={handleBuyNow}
+              disabled={product.stock === 0}
+              className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2"
+              variant={product.stock === 0 ? "secondary" : "default"}
+            >
+              {product.stock === 0 ? '😔 Out of Stock' : '🛍️ Buy Now (COD)'}
+            </Button>
+            
+            <Button
+              onClick={handleAddToCart}
+              disabled={product.stock === 0}
+              variant="outline"
+              className="w-full border-pink-500 text-pink-600 hover:bg-pink-50 font-semibold"
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Add to Cart
+            </Button>
+          </div>
+
+          {/* Free Shipping Notice */}
+          {product.price > 50 && (
+            <div className="mt-3 text-center">
+              <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                🚚 Free Shipping
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* COD Checkout Modal */}
+      {showCODCheckout && (
+        <CODCheckout
+          onClose={() => setShowCODCheckout(false)}
+          onOrderComplete={handleOrderComplete}
+        />
+      )}
+    </>
   );
 };
 

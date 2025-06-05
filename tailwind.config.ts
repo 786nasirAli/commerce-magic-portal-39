@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// BAREEHA'S ASSEMBLE Brand Colors
+				'brand-pink': '#E5739F',
+				'brand-rose': '#D4638A', 
+				'brand-gold': '#F4D03F',
+				'brand-light': '#FDF2F8',
+				'brand-dark': '#831843'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
