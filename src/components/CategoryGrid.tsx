@@ -89,40 +89,44 @@ const CategoryGrid: React.FC = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 px-2 md:px-0">
       {categories.map((category) => (
         <Link
           key={category.id}
           to={category.path}
-          className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+          className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 touch-manipulation"
         >
           {/* Background Image */}
-          <div className="relative h-32 md:h-40 overflow-hidden">
+          <div className="relative h-28 sm:h-32 md:h-40 overflow-hidden">
             <img
               src={category.image}
               alt={category.name}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              loading="lazy"
             />
             <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-80 group-hover:opacity-90 transition-opacity duration-300`} />
             
             {/* Icon */}
-            <div className="absolute top-3 right-3 text-2xl bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center">
+            <div className="absolute top-2 sm:top-3 right-2 sm:right-3 text-lg sm:text-2xl bg-white/20 backdrop-blur-sm rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
               {category.icon}
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4">
-            <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-pink-600 transition-colors">
+          <div className="p-3 sm:p-4">
+            <h3 className="font-bold text-sm sm:text-lg text-gray-900 mb-1 group-hover:text-pink-600 transition-colors leading-tight">
               {category.name}
             </h3>
-            <p className="text-sm text-gray-600 line-clamp-2">
+            <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 leading-relaxed">
               {category.description}
             </p>
           </div>
 
           {/* Hover Effect */}
           <div className="absolute inset-0 border-2 border-transparent group-hover:border-pink-300 rounded-2xl transition-all duration-300" />
+          
+          {/* Mobile Touch Feedback */}
+          <div className="absolute inset-0 bg-black/5 opacity-0 group-active:opacity-100 transition-opacity duration-150 md:hidden" />
         </Link>
       ))}
     </div>
