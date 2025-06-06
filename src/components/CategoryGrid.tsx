@@ -20,7 +20,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=300&fit=crop',
       icon: '💍',
       description: 'Elegant necklaces, earrings & more',
-      path: '/shop?category=jewelry',
+      path: '/jewelry',
       gradient: 'from-pink-400 to-rose-400'
     },
     {
@@ -29,7 +29,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop',
       icon: '👜',
       description: 'Luxury handbags & accessories',
-      path: '/shop?category=bags',
+      path: '/bags',
       gradient: 'from-rose-400 to-pink-400'
     },
     {
@@ -38,7 +38,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop',
       icon: '👗',
       description: 'Fashion-forward clothing',
-      path: '/shop?category=clothes',
+      path: '/clothes',
       gradient: 'from-pink-500 to-rose-500'
     },
     {
@@ -47,7 +47,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=300&fit=crop',
       icon: '👠',
       description: 'Elegant footwear collection',
-      path: '/shop?category=shoes',
+      path: '/shoes',
       gradient: 'from-rose-500 to-pink-500'
     },
     {
@@ -56,7 +56,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=300&fit=crop',
       icon: '👩',
       description: 'Curated for women',
-      path: '/shop?gender=women',
+      path: '/women',
       gradient: 'from-pink-400 to-purple-400'
     },
     {
@@ -65,7 +65,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
       icon: '👨',
       description: 'Sophisticated menswear',
-      path: '/shop?gender=men',
+      path: '/men',
       gradient: 'from-gray-500 to-gray-600'
     },
     {
@@ -74,7 +74,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop',
       icon: '👧👦',
       description: 'Trendy teen fashion',
-      path: '/shop?age=teen',
+      path: '/girls-boys',
       gradient: 'from-purple-400 to-pink-400'
     },
     {
@@ -83,7 +83,7 @@ const CategoryGrid: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=300&fit=crop',
       icon: '🧒',
       description: 'Adorable kids collection',
-      path: '/shop?age=kids',
+      path: '/kids',
       gradient: 'from-yellow-400 to-orange-400'
     }
   ];

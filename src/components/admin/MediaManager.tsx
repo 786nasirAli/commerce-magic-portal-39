@@ -6,69 +6,28 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Upload, Trash2, Plus, Play, Pause, Eye } from 'lucide-react';
-
-interface SliderImage {
-  id: string;
-  url: string;
-  title: string;
-  description: string;
-  isActive: boolean;
-}
-
-interface SliderVideo {
-  id: string;
-  videoUrl: string;
-  thumbnailUrl: string;
-  title: string;
-  description: string;
-  isActive: boolean;
-}
+import { Upload, Trash2, Plus, Play, Eye } from 'lucide-react';
+import { useSlider } from '@/contexts/SliderContext';
 
 interface MediaManagerProps {
   type: 'images' | 'videos';
 }
 
 const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
-  const [images, setImages] = useState<SliderImage[]>([
-    {
-      id: '1',
-      url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=800&fit=crop',
-      title: 'BAREEHA\'S ASSEMBLE',
-      description: 'Fashion meets the elegance - Discover our exclusive collection',
-      isActive: true
-    },
-    {
-      id: '2',
-      url: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&h=800&fit=crop',
-      title: 'Elegant Jewelry Collection',
-      description: 'Exquisite pieces that define sophistication',
-      isActive: true
-    }
-  ]);
-
-  const [videos, setVideos] = useState<SliderVideo[]>([
-    {
-      id: '1',
-      videoUrl: 'https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=400&fit=crop',
-      title: 'Jewelry Collection Showcase',
-      description: 'Discover our exquisite jewelry pieces',
-      isActive: true
-    },
-    {
-      id: '2',
-      videoUrl: 'https://player.vimeo.com/external/291648067.sd.mp4?s=7f9c1d1d1f7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b&profile_id=139',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=400&fit=crop',
-      title: 'Luxury Bags Presentation',
-      description: 'Elegant bags for every occasion',
-      isActive: true
-    }
-  ]);
+  const {
+    images,
+    videos,
+    addImage,
+    addVideo,
+    removeImage,
+    removeVideo,
+    toggleImageStatus,
+    toggleVideoStatus
+  } = useSlider();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [previewItem, setPreviewItem] = useState<SliderImage | SliderVideo | null>(null);
+  const [previewItem, setPreviewItem] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   
@@ -115,20 +74,20 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
     }
 
     if (type === 'images') {
-      const newImage: SliderImage = {
+      const newImage = {
         id: Date.now().toString(),
         url: mediaForm.url,
         title: mediaForm.title,
         description: mediaForm.description,
         isActive: true
       };
-      setImages([...images, newImage]);
+      addImage(newImage);
       toast({
         title: "Image added!",
-        description: `${mediaForm.title} has been added to the slider.`,
+        description: `${mediaForm.title} has been added to the slider and will appear on homepage.`,
       });
     } else {
-      const newVideo: SliderVideo = {
+      const newVideo = {
         id: Date.now().toString(),
         videoUrl: mediaForm.url,
         thumbnailUrl: mediaForm.thumbnailUrl || mediaForm.url,
@@ -136,10 +95,10 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
         description: mediaForm.description,
         isActive: true
       };
-      setVideos([...videos, newVideo]);
+      addVideo(newVideo);
       toast({
         title: "Video added!",
-        description: `${mediaForm.title} has been added to the video slider.`,
+        description: `${mediaForm.title} has been added to the video slider and will appear on homepage.`,
       });
     }
 
@@ -148,32 +107,32 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
   };
 
   const handleDeleteMedia = (mediaId: string) => {
-    if (window.confirm(`Are you sure you want to delete this ${type.slice(0, -1)}?`)) {
+    if (window.confirm(`Are you sure you want to delete this ${type.slice(0, -1)}? It will be removed from the homepage immediately.`)) {
       if (type === 'images') {
-        setImages(images.filter(img => img.id !== mediaId));
+        removeImage(mediaId);
       } else {
-        setVideos(videos.filter(vid => vid.id !== mediaId));
+        removeVideo(mediaId);
       }
       toast({
         title: `${type.slice(0, -1).charAt(0).toUpperCase() + type.slice(1, -1)} deleted`,
-        description: "Media has been removed from the slider.",
+        description: "Media has been removed from the slider and homepage.",
       });
     }
   };
 
   const toggleMediaStatus = (mediaId: string) => {
     if (type === 'images') {
-      setImages(images.map(img => 
-        img.id === mediaId ? { ...img, isActive: !img.isActive } : img
-      ));
+      toggleImageStatus(mediaId);
     } else {
-      setVideos(videos.map(vid => 
-        vid.id === mediaId ? { ...vid, isActive: !vid.isActive } : vid
-      ));
+      toggleVideoStatus(mediaId);
     }
+    toast({
+      title: "Status updated",
+      description: "Changes will be reflected on the homepage immediately.",
+    });
   };
 
-  const handlePreview = (item: SliderImage | SliderVideo) => {
+  const handlePreview = (item: any) => {
     setPreviewItem(item);
     setIsPreviewOpen(true);
   };
@@ -185,7 +144,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            {type === 'images' ? '🖼️ Image Slider Management' : '🎥 Video Slider Management'}
+            {type === 'images' ? '🖼️ Homepage Image Slider Management' : '🎥 Homepage Video Slider Management'}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={resetForm} className="bg-brand-pink hover:bg-brand-rose">
@@ -196,7 +155,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>
-                    Add New {type === 'images' ? 'Image' : 'Video'} to Slider
+                    Add New {type === 'images' ? 'Image' : 'Video'} to Homepage Slider
                   </DialogTitle>
                 </DialogHeader>
                 
@@ -302,14 +261,14 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
                     Cancel
                   </Button>
                   <Button onClick={handleSaveMedia}>
-                    Add {type === 'images' ? 'Image' : 'Video'}
+                    Add to Homepage
                   </Button>
                 </div>
               </DialogContent>
             </Dialog>
           </CardTitle>
           <CardDescription>
-            Manage your homepage {type} slider content
+            Manage your homepage {type} slider content - changes appear immediately on the homepage
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -319,14 +278,14 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
                 <div className="relative">
                   {type === 'images' ? (
                     <img
-                      src={(item as SliderImage).url}
+                      src={(item as any).url}
                       alt={item.title}
                       className="w-full h-32 object-cover"
                     />
                   ) : (
                     <div className="relative">
                       <img
-                        src={(item as SliderVideo).thumbnailUrl}
+                        src={(item as any).thumbnailUrl}
                         alt={item.title}
                         className="w-full h-32 object-cover"
                       />
@@ -356,7 +315,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
                       onClick={() => toggleMediaStatus(item.id)}
                       className="text-xs"
                     >
-                      {item.isActive ? 'Active' : 'Inactive'}
+                      {item.isActive ? 'Live on Homepage' : 'Hidden'}
                     </Button>
                     <Button
                       size="sm"
@@ -371,6 +330,12 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
               </Card>
             ))}
           </div>
+          
+          {currentMedia.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No {type} added yet. Add your first {type.slice(0, -1)} to get started!</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -384,14 +349,14 @@ const MediaManager: React.FC<MediaManagerProps> = ({ type }) => {
             <div className="space-y-4">
               {type === 'images' ? (
                 <img
-                  src={(previewItem as SliderImage).url}
+                  src={(previewItem as any).url}
                   alt={previewItem.title}
                   className="w-full h-64 object-cover rounded-lg"
                 />
               ) : (
                 <video
-                  src={(previewItem as SliderVideo).videoUrl}
-                  poster={(previewItem as SliderVideo).thumbnailUrl}
+                  src={(previewItem as any).videoUrl}
+                  poster={(previewItem as any).thumbnailUrl}
                   controls
                   className="w-full h-64 object-cover rounded-lg"
                 />
