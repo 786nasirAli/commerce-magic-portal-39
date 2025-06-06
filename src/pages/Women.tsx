@@ -20,7 +20,7 @@ const Women = () => {
   useEffect(() => {
     const allProducts = getProducts();
     const womenProducts = allProducts.filter(product => 
-      product.gender?.toLowerCase() === 'women' ||
+      product.name.toLowerCase().includes('women') ||
       ['jewelry', 'bags', 'clothes', 'shoes'].includes(product.category.toLowerCase())
     );
     setProducts(womenProducts);

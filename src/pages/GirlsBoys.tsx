@@ -20,8 +20,10 @@ const GirlsBoys = () => {
   useEffect(() => {
     const allProducts = getProducts();
     const teenProducts = allProducts.filter(product => 
-      product.ageGroup?.toLowerCase() === 'teen' ||
-      (product.name.toLowerCase().includes('teen') || product.name.toLowerCase().includes('youth'))
+      product.name.toLowerCase().includes('teen') || 
+      product.name.toLowerCase().includes('youth') ||
+      product.name.toLowerCase().includes('girls') ||
+      product.name.toLowerCase().includes('boys')
     );
     setProducts(teenProducts);
     setFilteredProducts(teenProducts);
