@@ -39,7 +39,7 @@ export const categoryService = {
   async createCategory(category: Omit<Category, 'id' | 'slug' | 'created_at' | 'updated_at'>): Promise<Category> {
     const { data, error } = await supabase
       .from('categories')
-      .insert([category])
+      .insert(category)
       .select()
       .single();
     

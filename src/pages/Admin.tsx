@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -89,7 +90,7 @@ const Admin = () => {
 
         {/* Main Admin Tabs */}
         <Tabs defaultValue="products-db" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6 lg:grid-cols-6">
             <TabsTrigger value="products-db" className="flex items-center gap-2">
               <Database className="w-4 h-4" />
               Products (DB)
@@ -106,9 +107,13 @@ const Admin = () => {
               <FolderOpen className="w-4 h-4" />
               Categories (Local)
             </TabsTrigger>
-            <TabsTrigger value="media" className="flex items-center gap-2">
+            <TabsTrigger value="images" className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4" />
-              Media
+              Images
+            </TabsTrigger>
+            <TabsTrigger value="videos" className="flex items-center gap-2">
+              <ImageIcon className="w-4 h-4" />
+              Videos
             </TabsTrigger>
           </TabsList>
 
@@ -184,19 +189,36 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="media">
+          <TabsContent value="images">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ImageIcon className="w-5 h-5" />
-                  Media Management
+                  Image Management
                 </CardTitle>
                 <CardDescription>
-                  Upload and manage images and videos for sliders and content
+                  Upload and manage images for homepage sliders
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <MediaManager />
+                <MediaManager type="images" />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="videos">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5" />
+                  Video Management
+                </CardTitle>
+                <CardDescription>
+                  Upload and manage videos for homepage sliders
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MediaManager type="videos" />
               </CardContent>
             </Card>
           </TabsContent>
