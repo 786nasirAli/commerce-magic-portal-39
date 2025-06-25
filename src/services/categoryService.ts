@@ -1,4 +1,5 @@
 
+
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -41,9 +42,17 @@ export const categoryService = {
 
   // Create new category
   async createCategory(category: { name: string; description?: string; image?: string }): Promise<Category> {
+    // Create the insert object with a temporary slug that will be overwritten by the database trigger
+    const insertData: CategoryInsert = {
+      name: category.name,
+      description: category.description,
+      image: category.image,
+      slug: 'temp-slug' // This will be overwritten by the database trigger
+    };
+
     const { data, error } = await supabase
       .from('categories')
-      .insert(category)
+      .insert(insertData)
       .select()
       .single();
     
@@ -74,3 +83,4 @@ export const categoryService = {
     if (error) throw error;
   }
 };
+
