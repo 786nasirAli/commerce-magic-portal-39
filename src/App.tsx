@@ -1,46 +1,36 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from '@/components/ui/toaster';
+import { CartProvider } from '@/contexts/CartContext';
+import { SliderProvider } from '@/contexts/SliderContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import Index from '@/pages/Index';
+import Shop from '@/pages/Shop';
+import Jewelry from '@/pages/Jewelry';
+import Bags from '@/pages/Bags';
+import Clothes from '@/pages/Clothes';
+import Shoes from '@/pages/Shoes';
+import Women from '@/pages/Women';
+import Men from '@/pages/Men';
+import GirlsBoys from '@/pages/GirlsBoys';
+import Kids from '@/pages/Kids';
+import NewArrival from '@/pages/NewArrival';
+import OnSale from '@/pages/OnSale';
+import Brand from '@/pages/Brand';
+import Admin from '@/pages/Admin';
+import CategoryPage from '@/pages/CategoryPage';
+import NotFound from '@/pages/NotFound';
+import './App.css';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./contexts/CartContext";
-import { AuthProvider } from "./contexts/AuthContext";
-import { SliderProvider } from "./contexts/SliderContext";
-import Index from "./pages/Index";
-import Shop from "./pages/Shop";
-import OnSale from "./pages/OnSale";
-import Brand from "./pages/Brand";
-import NewArrival from "./pages/NewArrival";
-import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
-import Jewelry from "./pages/Jewelry";
-import Bags from "./pages/Bags";
-import Clothes from "./pages/Clothes";
-import Shoes from "./pages/Shoes";
-import Women from "./pages/Women";
-import Men from "./pages/Men";
-import GirlsBoys from "./pages/GirlsBoys";
-import Kids from "./pages/Kids";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
+function App() {
+  return (
+    <AuthProvider>
+      <CartProvider>
         <SliderProvider>
-          <CartProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+          <Router>
+            <div className="App">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/shop" element={<Shop />} />
-                <Route path="/on-sale" element={<OnSale />} />
-                <Route path="/brand" element={<Brand />} />
-                <Route path="/new-arrival" element={<NewArrival />} />
-                <Route path="/admin" element={<Admin />} />
                 <Route path="/jewelry" element={<Jewelry />} />
                 <Route path="/bags" element={<Bags />} />
                 <Route path="/clothes" element={<Clothes />} />
@@ -49,14 +39,20 @@ const App = () => (
                 <Route path="/men" element={<Men />} />
                 <Route path="/girls-boys" element={<GirlsBoys />} />
                 <Route path="/kids" element={<Kids />} />
+                <Route path="/new-arrival" element={<NewArrival />} />
+                <Route path="/on-sale" element={<OnSale />} />
+                <Route path="/brand/:brandName" element={<Brand />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/category/:slug" element={<CategoryPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </CartProvider>
+              <Toaster />
+            </div>
+          </Router>
         </SliderProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </CartProvider>
+    </AuthProvider>
+  );
+}
 
 export default App;

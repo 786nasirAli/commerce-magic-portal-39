@@ -1,199 +1,204 @@
-
-import React, { useState, useEffect, useRef } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { getProducts, saveProducts, getBrands, getCategories } from '@/data/sampleData';
-import { Product } from '@/contexts/CartContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2, Upload, Image as ImageIcon, X, Video, Settings } from 'lucide-react';
-import Header from '@/components/Header';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Package, 
+  Users, 
+  ShoppingCart, 
+  TrendingUp, 
+  Settings, 
+  Image as ImageIcon,
+  FolderOpen,
+  Database
+} from 'lucide-react';
+import ProductManager from '@/components/admin/ProductManager';
 import CategoryManager from '@/components/admin/CategoryManager';
 import MediaManager from '@/components/admin/MediaManager';
-import ProductManager from '@/components/admin/ProductManager';
+import DatabaseProductManager from '@/components/admin/DatabaseProductManager';
+import DatabaseCategoryManager from '@/components/admin/DatabaseCategoryManager';
+import { getProducts } from '@/data/sampleData';
 
 const Admin = () => {
-  const { isAdmin, isLoggedIn, login } = useAuth();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
-
-  useEffect(() => {
-    setProducts(getProducts());
-  }, []);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const success = login(loginForm.username, loginForm.password);
-    if (success) {
-      toast({
-        title: "Login successful",
-        description: "Welcome to the admin dashboard!",
-      });
-    } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid credentials. Use admin/admin123",
-        variant: "destructive",
-      });
-    }
-  };
-
-  if (!isLoggedIn || !isAdmin) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-md mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle>🔐 Admin Login</CardTitle>
-                <CardDescription>
-                  Please log in to access the admin dashboard
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div>
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      id="username"
-                      type="text"
-                      value={loginForm.username}
-                      onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
-                      placeholder="admin"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={loginForm.password}
-                      onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                      placeholder="admin123"
-                      required
-                    />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    🚀 Login to Dashboard
-                  </Button>
-                </form>
-                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-700">
-                    <strong>Demo Credentials:</strong><br />
-                    Username: admin<br />
-                    Password: admin123
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const [products, setProducts] = useState(getProducts());
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-brand-pink to-brand-rose bg-clip-text text-transparent">
-            🎛️ BAREEHA'S ASSEMBLE Admin Dashboard
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            🛍️ Admin Dashboard
           </h1>
-          <p className="text-gray-600">Manage your e-commerce store with ease</p>
+          <p className="text-gray-600">
+            Manage your eCommerce store with powerful admin controls
+          </p>
         </div>
 
-        {/* Enhanced Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-blue-600 mb-2">
-                {products.length}
-              </div>
-              <div className="text-gray-600">Total Products</div>
-              <div className="text-xs text-green-600 mt-1">
-                Active inventory
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Products</p>
+                  <p className="text-3xl font-bold text-gray-900">{products.length}</p>
+                </div>
+                <Package className="h-12 w-12 text-blue-600" />
               </div>
             </CardContent>
           </Card>
+
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-green-600 mb-2">
-                {products.filter(p => p.isOnSale).length}
-              </div>
-              <div className="text-gray-600">On Sale</div>
-              <div className="text-xs text-red-600 mt-1">
-                Discounted items
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Categories</p>
+                  <p className="text-3xl font-bold text-gray-900">8</p>
+                </div>
+                <FolderOpen className="h-12 w-12 text-green-600" />
               </div>
             </CardContent>
           </Card>
+
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-purple-600 mb-2">
-                {products.filter(p => p.isNew).length}
-              </div>
-              <div className="text-gray-600">New Arrivals</div>
-              <div className="text-xs text-purple-600 mt-1">
-                Latest additions
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Active Users</p>
+                  <p className="text-3xl font-bold text-gray-900">1,234</p>
+                </div>
+                <Users className="h-12 w-12 text-purple-600" />
               </div>
             </CardContent>
           </Card>
+
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-orange-600 mb-2">
-                {products.filter(p => p.stock < 10).length}
-              </div>
-              <div className="text-gray-600">Low Stock</div>
-              <div className="text-xs text-orange-600 mt-1">
-                Needs restocking
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Revenue</p>
+                  <p className="text-3xl font-bold text-gray-900">$12.3K</p>
+                </div>
+                <TrendingUp className="h-12 w-12 text-pink-600" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Admin Tabs */}
-        <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8">
-            <TabsTrigger value="products" className="flex items-center gap-2">
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Products</span>
+        <Tabs defaultValue="products-db" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
+            <TabsTrigger value="products-db" className="flex items-center gap-2">
+              <Database className="w-4 h-4" />
+              Products (DB)
             </TabsTrigger>
-            <TabsTrigger value="categories" className="flex items-center gap-2">
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Categories</span>
+            <TabsTrigger value="categories-db" className="flex items-center gap-2">
+              <Database className="w-4 h-4" />
+              Categories (DB)
             </TabsTrigger>
-            <TabsTrigger value="images" className="flex items-center gap-2">
+            <TabsTrigger value="products-local" className="flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              Products (Local)
+            </TabsTrigger>
+            <TabsTrigger value="categories-local" className="flex items-center gap-2">
+              <FolderOpen className="w-4 h-4" />
+              Categories (Local)
+            </TabsTrigger>
+            <TabsTrigger value="media" className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4" />
-              <span className="hidden sm:inline">Images</span>
-            </TabsTrigger>
-            <TabsTrigger value="videos" className="flex items-center gap-2">
-              <Video className="w-4 h-4" />
-              <span className="hidden sm:inline">Videos</span>
+              Media
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="products">
-            <ProductManager products={products} setProducts={setProducts} />
+          <TabsContent value="products-db">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="w-5 h-5" />
+                  Database Product Management
+                  <Badge variant="secondary">Connected to Supabase</Badge>
+                </CardTitle>
+                <CardDescription>
+                  Manage products with full database persistence, category relationships, and dynamic routing
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DatabaseProductManager />
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="categories">
-            <CategoryManager />
+          <TabsContent value="categories-db">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="w-5 h-5" />
+                  Database Category Management
+                  <Badge variant="secondary">Connected to Supabase</Badge>
+                </CardTitle>
+                <CardDescription>
+                  Create, edit, and manage categories with automatic slug generation and page routing
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DatabaseCategoryManager />
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="images">
-            <MediaManager type="images" />
+          <TabsContent value="products-local">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5" />
+                  Local Product Management
+                  <Badge variant="outline">Local Storage</Badge>
+                </CardTitle>
+                <CardDescription>
+                  Legacy product management system using local storage
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ProductManager products={products} setProducts={setProducts} />
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="videos">
-            <MediaManager type="videos" />
+          <TabsContent value="categories-local">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FolderOpen className="w-5 h-5" />
+                  Local Category Management
+                  <Badge variant="outline">Local Storage</Badge>
+                </CardTitle>
+                <CardDescription>
+                  Legacy category management system for local development
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CategoryManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="media">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5" />
+                  Media Management
+                </CardTitle>
+                <CardDescription>
+                  Upload and manage images and videos for sliders and content
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MediaManager />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

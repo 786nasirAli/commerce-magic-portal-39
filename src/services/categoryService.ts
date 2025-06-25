@@ -1,0 +1,72 @@
+
+import { supabase } from '@/integrations/supabase/client';
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const categoryService = {
+  // Get all categories
+  async getCategories(): Promise<Category[]> {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name');
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get category by slug
+  async getCategoryBySlug(slug: string): Promise<Category | null> {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Create new category
+  async createCategory(category: Omit<Category, 'id' | 'slug' | 'created_at' | 'updated_at'>): Promise<Category> {
+    const { data, error } = await supabase
+      .from('categories')
+      .insert([category])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Update category
+  async updateCategory(id: string, updates: Partial<Category>): Promise<Category> {
+    const { data, error } = await supabase
+      .from('categories')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Delete category
+  async deleteCategory(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+  }
+};
