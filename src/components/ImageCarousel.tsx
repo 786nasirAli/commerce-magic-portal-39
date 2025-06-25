@@ -2,51 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-interface CarouselImage {
-  id: string;
-  url: string;
-  title: string;
-  description: string;
-}
+import { useSlider } from '@/contexts/SliderContext';
 
 const ImageCarousel: React.FC = () => {
+  const { getActiveImages } = useSlider();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Sample promotional images for BAREEHA'S ASSEMBLE
-  const images: CarouselImage[] = [
-    {
-      id: '1',
-      url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=800&fit=crop',
-      title: 'BAREEHA\'S ASSEMBLE',
-      description: 'Fashion meets the elegance - Discover our exclusive collection'
-    },
-    {
-      id: '2', 
-      url: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&h=800&fit=crop',
-      title: 'Elegant Jewelry Collection',
-      description: 'Exquisite pieces that define sophistication'
-    },
-    {
-      id: '3',
-      url: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=800&fit=crop',
-      title: 'Luxury Bags & Accessories',
-      description: 'Handcrafted elegance for the modern woman'
-    },
-    {
-      id: '4',
-      url: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1920&h=800&fit=crop',
-      title: 'Fashion Forward Clothing',
-      description: 'Where style meets comfort in perfect harmony'
-    },
-    {
-      id: '5',
-      url: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=1920&h=800&fit=crop',
-      title: 'Premium Footwear',
-      description: 'Step into elegance with our curated shoe collection'
-    }
-  ];
+  // Get active images from the slider context
+  const images = getActiveImages();
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -60,13 +24,32 @@ const ImageCarousel: React.FC = () => {
     setCurrentIndex(index);
   };
 
+  // Reset currentIndex if it's out of bounds when images change
+  useEffect(() => {
+    if (currentIndex >= images.length && images.length > 0) {
+      setCurrentIndex(0);
+    }
+  }, [images.length, currentIndex]);
+
   // Auto-play functionality
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || images.length === 0) return;
 
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, images.length]);
+
+  // Don't render if no images are available
+  if (images.length === 0) {
+    return (
+      <div className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-600 mb-2">No Images Available</h2>
+          <p className="text-gray-500">Please add images from the admin dashboard to display the slider.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -112,34 +95,40 @@ const ImageCarousel: React.FC = () => {
       </div>
 
       {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-      
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </>
+      )}
 
       {/* Dots Indicator */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
-              index === currentIndex 
-                ? 'bg-white scale-125' 
-                : 'bg-white/50 hover:bg-white/75'
-            }`}
-          />
-        ))}
-      </div>
+      {images.length > 1 && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                index === currentIndex 
+                  ? 'bg-white scale-125' 
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
